@@ -26,7 +26,7 @@ public class serverSocket
   
   public void runServer() throws IOException
   {
-    ServerSocket serverSocket = new ServerSocket(9090); // establish a server socket to receive messages over the network from clients
+    ServerSocket serverSocket = new ServerSocket(9001); // establish a server socket to receive messages over the network from clients
     System.out.println("Server ready...");
   
     while (true) // runs forever
@@ -65,7 +65,7 @@ public class serverSocket
 
   public void runServerThread() throws IOException
   {
-    ServerSocket serverSocket = new ServerSocket(9090);
+    ServerSocket serverSocket = new ServerSocket(9001);
     System.out.println("Server ready...");
     while (true)
     {

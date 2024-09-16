@@ -1,0 +1,133 @@
+\documentclass[11pt]{article}
+\usepackage[dvips]{graphics}
+\usepackage{sem}
+
+
+\usepackage[dvips]{graphicx}
+\title{\vspace{-0.5cm} {\small School of Computer Science, McGill University }
+    \\COMP-512 Distributed Systems, Fall 2024 \\ \vspace{-0.3cm}}
+		\date{}
+\author{RMI Tutorial \\ \vspace{-0.5cm}}
+\pagestyle{plain}
+\markboth{COMP-512 Distributed Systems}{}
+
+% ACHTUNG: Genau eines inkludieren! 
+% ACHTUNG: VOR "\end{lsg}" duerfen keine Spaces stehen!!!
+
+\begin{document}
+\maketitle
+
+
+The following is a description of the steps to run the RMI Tutorial Code. Note that there is also a video that shows the steps.
+The Server in the tutorial provides a very simple account object that has a balance that can be queried and updated.
+
+
+\section*{Distributed Components}
+
+The example program has 2 separate components that should run on two different machines:
+
+\begin{itemize}
+				\item The server host - machine on which the remote server and its registry are running
+				\item The client host - machine on which the client is running
+\end{itemize}
+
+
+You should be able to use the following machines located in Trottier building for your programming tasks (note that some may be offline or have crashed - you must check which ones are available). 
+
+https://www.cs.mcgill.ca/docs/resources/
+
+We recently checked the open-gpu* tr-open-* machines and most were up and running. 
+
+\section*{Components}
+
+There is one 
+
+\section*{RMI Registry}
+
+Before you can start the server, you must make sure the rmiregistry is running on your machine. Start it with the following command:
+
+\texttt{\$ rmiregistry -J-Djava.rmi.server.useCodebaseOnly=false 1099 \& }
+
+Note that you have to start the rmiregistry on any machine you intend to use as an RMI server. For convenience, a script \texttt{Server/run\_rmi.sh} has been provided with the above command. Also see \textbf{Port Conflicts} section below.
+
+\section*{Creating a Server}
+
+First, download and extract the template code (\texttt{Template.tar.gz} on myCourses) to your working directory. Before the template will compile, you must first make 1 change to the RMI object name:
+
+\texttt{\$ cd Server\\
+\$ vim Server/RMI/RMIResourceManager.java}
+
+Edit the line after the TODO note, replacing \texttt{group\_xx\_ } with \texttt{group\_<YourGroupNumber>\_}, or any other unique identifier. This will avoid conflicts with other unrelated RMI objects. Next build the code, invoking make:
+
+\texttt{
+\$ make \\
+Creating server java policy\\
+javac Server/RMI/*.java Server/Interface/IResourceManager.java Server/Common/*.java\\
+}
+
+Invoking \texttt{make} will first write the policy file needed to RMI permissions, and then build the server (for more details, view the included \texttt{Makefile}). To run the server, we execute one last command, where the parameter specifies the RMI object name (this will be convenient for running multiple \texttt{ResourceManagers}, for more details refer to the script contents):
+
+\texttt{
+\$ ./run server.sh Resources\\
+`Resources' resource manager server ready and bound to `group\_<YourGroupNumber>\_Resources'
+}
+
+If you get an exception at this point, it means that you have a problem with paths or executable names. If you are having trouble with permissions, ensure that the \texttt{class} and \texttt{jar} files are world- readable (permissions 704) and all the directories along your path are world-executable (permissions 705). The rmiregistry and client will get the proxy files from this directory.
+
+For your programming assignment, take note of the following files:
+
+\begin{itemize}
+				\item \texttt{Server/Interface/IResourceManager.java}: interface definition for the \texttt{ResourceManager}
+				\item \texttt{Server/Common/ResourceManager.java}: core (communication independent) implementa- tion of the interface that manages the local state
+				\item \texttt{Server/RMI/RMIResourceManager.java}: RMI specific \texttt{ResourceManager} implementation that subclasses the common version
+\end{itemize}
+
+\section*{Creating a Client}
+
+We provide you with the implementation of an interactive client (thanks to Beibei Zou, Chenliang Sun and Nomair Naeem). Information on how to use the client can be found in \texttt{UserGuide.pdf} available on myCourses. Before building, we must first edit the RMI client implementation to match the server as done above:
+
+
+\texttt{\$ cd Client\\
+\$ vim Client/RMIClient.java}
+
+Edit the line after the TODO note, replacing \texttt{group\_xx\_} with the identifier you chose when configuring your server. Next build the code, invoking \texttt{make}:
+
+
+\texttt{
+\$ make\\
+Creating client java policy\\
+make -C ../Server/ RMIInterface.jar\\
+make[1]: Entering directory `../Server'\\
+Compiling RMI server interface\\
+javac Server/Interface/IResourceManager.java\\
+jar cvf RMIInterface.jar Server/Interface/IResourceManager.class\\
+added manifest\\
+adding: Server/Interface/IResourceManager.class(in = 1180) (out= 473)(deflated 59\%)\\
+make[1]: Leaving directory `../Server'\\
+javac -cp ../Server/RMIInterface.jar Client/*.java\\
+}
+
+You can see that we firstly create the client policy required for RMI, then assemble a \texttt{jar} file of the RMI interface. This allows the client to know about the server interface without the implementation details. For information on the \texttt{jar} creation process or the RMI specific details, see the \texttt{Makefiles} of both the client and server.
+
+To execute the client, we execute one last command, where \texttt{<server\_hostname>} is the machine running the server. If it is running on the same machine, simply specify \texttt{localhost}.
+
+\texttt{
+\$ ./run client.sh <server\_hostname> Resources\\
+Connected to `Resources' server [localhost:1099/group\_<YourGroupNumber>\_Resources]
+}
+
+Did it work? Congratulations! Now you are ready for the real stuff!
+
+
+\section*{Port Conflicts}
+If multiple project groups are using the same server, it is possible that you might run into conflicts on using the same, default RMI registry port of \texttt{1099}. If you suspect this is happening, you might want to choose a different port number (something like \texttt{30XX}) where \texttt{XX} is your group number. You can then replace \texttt{1099} with your chosen port number in the following files.\\
+\texttt{
+Server/Server/RMI/RMIResourceManager.java \\
+Server/run\_rmi.sh:rmiregistry \\
+Client/Client/RMIClient.java \\
+}
+
+Of course it is always a good idea to change it in the beginning itself, before someone else starts using the same server and you start having problems half way into your development.
+
+
+\end{document}
