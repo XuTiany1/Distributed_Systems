@@ -16,7 +16,7 @@ Client's instructions on machine tr-open-02
 1-compile the client socket 
 [yourSOCSAccount]@tr-open-02 ~/[somewhere]/comp512 $ javac clientSocket.java 
 2- Run the server socket
-[yourSOCSAccount]@tr-open-02 ~/[somewhere]/comp512 $ java clientSocket lab2-1
+[yourSOCSAccount]@tr-open-02 ~/[somewhere]/comp512 $ java clientSocket tr-open-01
 
 Clients commands examples:
 ===========================

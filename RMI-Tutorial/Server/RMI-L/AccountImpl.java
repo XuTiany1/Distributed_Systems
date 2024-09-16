@@ -13,6 +13,9 @@ public class AccountImpl implements Account
   public AccountImpl(float b, int id){  balance=b; ID=id; }
   public float getBalance() { return balance; }
 
+
+  // Synchronized method to ensure thread safety when modifying the balance.
+  // This prevents race conditions when multiple threads try to access this method.
   public synchronized float addToBalance (float amount)
   {
       float newbalance = balance + amount;
