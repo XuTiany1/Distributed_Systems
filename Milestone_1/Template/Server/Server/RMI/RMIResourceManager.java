@@ -16,11 +16,24 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+/**
+ * RMIResourceManager.java
+ * 
+ * This class extends the `ResourceManager` and sets up a Remote Method Invocation (RMI) server 
+ * that registers itself as a resource manager in the RMI registry. It allows clients to remotely 
+ * access and manage resources (flights, cars, rooms) through the `IResourceManager` interface.
+ * 
+ * The server binds itself to a specific name in the RMI registry and listens for client requests.
+ * On shutdown, it ensures to unbind itself from the registry.
+ * 
+ * Functions:
+ * - main(String[] args): The entry point of the RMI server. It sets up the RMI registry, binds the server instance to a specific name, and handles shutdown tasks.
+ * - RMIResourceManager(String name): Constructor that initializes the resource manager with a given name by calling the parent `ResourceManager` constructor.
+ */
 public class RMIResourceManager extends ResourceManager 
 {
 	private static String s_serverName = "Server";
-	//TODO: ADD YOUR GROUP NUMBER TO COMPLETE
-	private static String s_rmiPrefix = "group_xx_";
+	private static String s_rmiPrefix = "group_19_";
 
 	public static void main(String args[])
 	{

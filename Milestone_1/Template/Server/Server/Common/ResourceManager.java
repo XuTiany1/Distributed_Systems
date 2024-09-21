@@ -11,6 +11,49 @@ import java.util.*;
 import java.rmi.RemoteException;
 import java.io.*;
 
+
+
+/**
+ * ResourceManager.java
+ * 
+ * This class implements the `IResourceManager` interface and serves as the core logic for managing 
+ * resources such as flights, cars, rooms, and customers. It provides methods for adding, deleting, 
+ * querying, and reserving these resources, as well as managing customer reservations.
+ * 
+ * The resource data is stored in an internal `RMHashMap` structure, and the class ensures thread-safety 
+ * by synchronizing access to this data. The class handles both general data management tasks and 
+ * specific operations related to reservations.
+ * 
+ * Functions:
+ * - ResourceManager(String p_name): Constructor to initialize the resource manager with a specific name.
+ * - readData(String key): Reads a data item from storage.
+ * - writeData(String key, RMItem value): Writes a data item to storage.
+ * - removeData(String key): Removes a data item from storage.
+ * - deleteItem(String key): Deletes a reservable item if it has no reservations.
+ * - queryNum(String key): Returns the number of available items (seats, rooms, cars).
+ * - queryPrice(String key): Returns the price of an item.
+ * - reserveItem(int customerID, String key, String location): Reserves an item for a customer and updates storage.
+ * - addFlight(int flightNum, int flightSeats, int flightPrice): Adds a flight or updates an existing flight's seat count and price.
+ * - addCars(String location, int count, int price): Adds cars or updates an existing location's car count and price.
+ * - addRooms(String location, int count, int price): Adds rooms or updates an existing location's room count and price.
+ * - deleteFlight(int flightNum): Deletes a flight.
+ * - deleteCars(String location): Deletes all cars at a location.
+ * - deleteRooms(String location): Deletes all rooms at a location.
+ * - queryFlight(int flightNum): Returns the number of available seats in a flight.
+ * - queryCars(String location): Returns the number of available cars at a location.
+ * - queryRooms(String location): Returns the number of available rooms at a location.
+ * - queryFlightPrice(int flightNum): Returns the price per seat for a flight.
+ * - queryCarsPrice(String location): Returns the price of cars at a location.
+ * - queryRoomsPrice(String location): Returns the price of rooms at a location.
+ * - newCustomer(): Creates a new customer with a unique ID.
+ * - newCustomer(int customerID): Creates a new customer with the specified ID.
+ * - deleteCustomer(int customerID): Deletes a customer and releases any reserved items.
+ * - reserveFlight(int customerID, int flightNum): Reserves a flight for a customer.
+ * - reserveCar(int customerID, String location): Reserves a car for a customer.
+ * - reserveRoom(int customerID, String location): Reserves a room for a customer.
+ * - bundle(int customerId, Vector<String> flightNumbers, String location, boolean car, boolean room): Placeholder for bundling reservations (not implemented).
+ * - getName(): Returns the name of the resource manager.
+ */
 public class ResourceManager implements IResourceManager
 {
 	protected String m_name = "";
