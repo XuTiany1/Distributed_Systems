@@ -9,8 +9,30 @@ import java.rmi.ConnectException;
 import java.rmi.ServerException;
 import java.rmi.UnmarshalException;
 
+
+
+/**
+ * Client.java
+ * 
+ * Provides a client interface for interacting with remote resource management system to 
+ * handle resources like flights, cars, rooms, and customers via commands. 
+ * 
+ * It reads user input, parses commands, and communicates with the server through the 
+ * `IResourceManager` interface.
+ * 
+ * Functions:
+ * - connectServer(): Abstract method to establish a connection with the server (to be implemented by subclasses).
+ * - start(): Main loop that reads user input, parses commands, and executes them.
+ * - execute(Command cmd, Vector<String> arguments): Executes various resource-related commands like adding, deleting, querying, and reserving flights, cars, rooms, and customers.
+ * - parse(String command): Parses the input command string into individual arguments.
+ * - checkArgumentsCount(Integer expected, Integer actual): Validates that the correct number of arguments are passed for a command.
+ * - toInt(String string): Converts a string argument to an integer.
+ * - toBoolean(String string): Converts a string argument to a boolean.
+ */
 public abstract class Client
 {
+
+	// Instance of 
 	IResourceManager m_resourceManager = null;
 
 	public Client()

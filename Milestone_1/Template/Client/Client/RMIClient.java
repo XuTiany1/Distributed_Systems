@@ -10,6 +10,25 @@ import java.rmi.NotBoundException;
 import java.util.*;
 import java.io.*;
 
+
+/**
+ * RMIClient.java
+ * 
+ * This class extends the abstract `Client` class and implements the functionality for connecting to a remote 
+ * server using Java RMI (Remote Method Invocation). 
+ * 
+ * It allows the client to communicate with the resource 
+ * manager running on the server to manage resources like flights, cars, and rooms.
+ * 
+ * The client continuously tries to establish a connection with the RMI server and, once connected, 
+ * allows users to issue commands through the command-line interface.
+ * 
+ * Functions:
+ * - main(String[] args): Entry point for the RMI client. Accepts optional arguments for server hostname and server RMI object name, and starts the client.
+ * - RMIClient(): Constructor that calls the superclass `Client` constructor.
+ * - connectServer(): Initiates the connection to the server using default host, port, and server name.
+ * - connectServer(String server, int port, String name): Connects to the specified RMI server and looks up the resource manager object. Continuously retries until a successful connection is established.
+ */
 public class RMIClient extends Client
 {
 	private static String s_serverHost = "localhost";
@@ -18,7 +37,7 @@ public class RMIClient extends Client
 	private static String s_serverName = "Server";
 
 	//TODO: ADD YOUR GROUP NUMBER TO COMPILE
-	private static String s_rmiPrefix = "group_xx_";
+	private static String s_rmiPrefix = "group_19_";
 
 	public static void main(String args[])
 	{	

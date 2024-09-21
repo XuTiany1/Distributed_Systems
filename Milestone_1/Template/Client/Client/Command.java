@@ -1,5 +1,18 @@
 package Client;
 
+
+/**
+ * Command.java
+ * 
+ * This enum defines all the commands that can be issued by the client to interact with the remote resource 
+ * management system.
+ * 
+ * Functions:
+ * - Command(String p_description, String p_args): Constructor to define a command with its description and argument format.
+ * - fromString(String string): Returns the corresponding Command enum value from a string input; throws an exception if the command is not found.
+ * - description(): Returns a string listing all supported commands, with instructions on how to get detailed information about each.
+ * - toString(): Returns a detailed string representation of the command, including its name, description, and usage format.
+ */
 public enum Command {
 	Help("List all available commands", "[CommandName]"),
 
