@@ -417,14 +417,131 @@ public class ResourceManager implements IResourceManager
 	}
 
 	// Reserve bundle 
-	public boolean bundle(int customerId, Vector<String> flightNumbers, String location, boolean car, boolean room) throws RemoteException
-	{
-		return false;
+	public boolean bundle(int customerID, Vector<String> flightNumbers, String location, boolean car, boolean room) throws RemoteException {
+		Trace.info("RM::bundle(customer=" + customerID + ", " + flightNumbers.toString() + ", " + location + ") called");
+	
+		// Check if the customer exists
+		Customer customer = (Customer)readData(Customer.getKey(customerID));
+		if (customer == null) {
+			Trace.warn("RM::bundle() failed--customer doesn't exist");
+			return false;
+		}
+	
+		// No other thread can modify the customer’s data
+		synchronized (customer) {
+	
+			// HashMaps to store flight counts and prices
+			HashMap<String, Integer> countMap = countFlights(flightNumbers);
+			HashMap<Integer, Integer> flightPrice = new HashMap<Integer, Integer>();
+			int carPrice = 0;
+			int roomPrice = 0;
+	
+			// Check availability and prices for flights
+			for (String flightNumStr : countMap.keySet()) {
+				int flightNum;
+				try {
+					flightNum = Integer.parseInt(flightNumStr);
+				} catch (NumberFormatException e) {
+					Trace.warn("RM::bundle() failed--invalid flight number format: " + flightNumStr);
+					return false;
+				}
+	
+				int requiredSeats = countMap.get(flightNumStr);
+				int availableSeats = queryFlight(flightNum);
+				int price = queryFlightPrice(flightNum);
+	
+				if (availableSeats < requiredSeats) {
+					Trace.warn("Not enough seats available for flight " + flightNum);
+					return false;
+				} else {
+					flightPrice.put(flightNum, price);
+				}
+			}
+	
+			// Check availability and prices for car
+			if (car) {
+				int availableCars = queryCars(location);
+				carPrice = queryCarsPrice(location);
+				if (availableCars < 1) {
+					Trace.warn("No cars available at " + location);
+					return false;
+				}
+			}
+	
+			// Check availability and prices for room
+			if (room) {
+				int availableRooms = queryRooms(location);
+				roomPrice = queryRoomsPrice(location);
+				if (availableRooms < 1) {
+					Trace.warn("No rooms available at " + location);
+					return false;
+				}
+			}
+	
+			// All resources are available, proceed to reserve them
+			// Reserve flights
+			for (String flightNumStr : countMap.keySet()) {
+				int flightNum = Integer.parseInt(flightNumStr);
+				int count = countMap.get(flightNumStr);
+				for (int i = 0; i < count; i++) {
+					boolean success = reserveFlight(customerID, flightNum);
+					if (!success) {
+						Trace.warn("Failed to reserve flight " + flightNum);
+						return false; // Should not happen after availability check
+					}
+				}
+			}
+	
+			// Reserve car
+			if (car) {
+				boolean success = reserveCar(customerID, location);
+				if (!success) {
+					Trace.warn("Failed to reserve car at " + location);
+					return false; // Should not happen after availability check
+				}
+			}
+	
+			// Reserve room
+			if (room) {
+				boolean success = reserveRoom(customerID, location);
+				if (!success) {
+					Trace.warn("Failed to reserve room at " + location);
+					return false; // Should not happen after availability check
+				}
+			}
+	
+			Trace.info("RM::bundle() succeeded");
+			return true;
+		}
 	}
+	
 
 	public String getName() throws RemoteException
 	{
 		return m_name;
 	}
+
+
+	/*
+	 * 
+	 * Helper function to count flight occurrences
+	 * PARAM:
+	 * 		- Vector<String> of flight numbers and 
+	 * RETURN:
+	 * 		- HashMap<String, Integer> where each key is a flight number, and the value is the count of how many times it appears in the vector
+	 */
+	private HashMap<String, Integer> countFlights(Vector<String> flightNumbers) {
+		HashMap<String, Integer> countMap = new HashMap<>();
+
+		for (String flightNum : flightNumbers) {
+			if (countMap.containsKey(flightNum)) {
+				countMap.put(flightNum, countMap.get(flightNum) + 1);
+			} else {
+				countMap.put(flightNum, 1);
+			}
+		}
+		return countMap;
+	}
+
 }
  
