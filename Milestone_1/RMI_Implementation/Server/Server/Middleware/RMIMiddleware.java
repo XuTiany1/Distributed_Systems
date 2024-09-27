@@ -1,14 +1,11 @@
 package Server.Middleware;
 import Server.Interface.*;
-
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.RemoteException;
-import java.rmi.NotBoundException;
-
+import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
-import java.io.*;
-import java.lang.reflect.Array;
 
 //  * Functions:
 //  * - ResourceManager(String p_name): Constructor to initialize the resource manager with a specific name.
@@ -66,7 +63,7 @@ public class RMIMiddleware extends Middleware {
 		// Create the RMI middleware entry
 		try {
 			// Create a new Middleware object
-			RMIResourceManager middleware = new RMIMiddleware("Middlware");
+			var middleware = new RMIMiddleware();
 
 			// Dynamically generate the stub (client proxy)
 			IResourceManager resourceManager = (IResourceManager)UnicastRemoteObject.exportObject(middleware, 0);
@@ -93,7 +90,7 @@ public class RMIMiddleware extends Middleware {
 					}
 				}
 			});                                       
-			System.out.println("'" + middleware_name + "' resource manager middleware ready and bound to '" + s_rmiPrefix + middleware_name + "'");
+			System.out.println("'" + middleware_name + "' resource manager middleware ready and bound to '" + middleware_rmiPrefix + middleware_name + "'");
 		}
 		catch (Exception e) {
 			System.err.println((char)27 + "[31;1mMiddleware exception: " + (char)27 + "[0mUncaught exception");
@@ -154,13 +151,13 @@ public class RMIMiddleware extends Middleware {
 			while (true) {
 				try {
 					Registry registry = LocateRegistry.getRegistry(server, port);
-					flight_resourceManager = (IResourceManager)registry.lookup(s_rmiPrefix + name);
-					System.out.println("Connected to '" + name + "' flight server [" + server + ":" + port + "/" + s_rmiPrefix + name + "]");
+					flight_resourceManager = (IResourceManager)registry.lookup(middleware_rmiPrefix + name);
+					System.out.println("Connected to '" + name + "' flight server [" + server + ":" + port + "/" + middleware_rmiPrefix + name + "]");
 					break;
 				}
 				catch (NotBoundException|RemoteException e) {
 					if (first) {
-						System.out.println("Waiting for '" + name + "' flight server [" + server + ":" + port + "/" + s_rmiPrefix + name + "]");
+						System.out.println("Waiting for '" + name + "' flight server [" + server + ":" + port + "/" + middleware_rmiPrefix + name + "]");
 						first = false;
 					}
 				}
@@ -181,13 +178,13 @@ public class RMIMiddleware extends Middleware {
 			while (true) {
 				try {
 					Registry registry = LocateRegistry.getRegistry(server, port);
-					car_resourceManager = (IResourceManager)registry.lookup(s_rmiPrefix + name);
-					System.out.println("Connected to '" + name + "' car server [" + server + ":" + port + "/" + s_rmiPrefix + name + "]");
+					car_resourceManager = (IResourceManager)registry.lookup(middleware_rmiPrefix + name);
+					System.out.println("Connected to '" + name + "' car server [" + server + ":" + port + "/" + middleware_rmiPrefix + name + "]");
 					break;
 				}
 				catch (NotBoundException|RemoteException e) {
 					if (first) {
-						System.out.println("Waiting for '" + name + "' car server [" + server + ":" + port + "/" + s_rmiPrefix + name + "]");
+						System.out.println("Waiting for '" + name + "' car server [" + server + ":" + port + "/" + middleware_rmiPrefix + name + "]");
 						first = false;
 					}
 				}
@@ -208,13 +205,13 @@ public class RMIMiddleware extends Middleware {
 			while (true) {
 				try {
 					Registry registry = LocateRegistry.getRegistry(server, port);
-					room_resourceManager = (IResourceManager)registry.lookup(s_rmiPrefix + name);
-					System.out.println("Connected to '" + name + "' room server [" + server + ":" + port + "/" + s_rmiPrefix + name + "]");
+					room_resourceManager = (IResourceManager)registry.lookup(middleware_rmiPrefix + name);
+					System.out.println("Connected to '" + name + "' room server [" + server + ":" + port + "/" + middleware_rmiPrefix + name + "]");
 					break;
 				}
 				catch (NotBoundException|RemoteException e) {
 					if (first) {
-						System.out.println("Waiting for '" + name + "' room server [" + server + ":" + port + "/" + s_rmiPrefix + name + "]");
+						System.out.println("Waiting for '" + name + "' room server [" + server + ":" + port + "/" + middleware_rmiPrefix + name + "]");
 						first = false;
 					}
 				}

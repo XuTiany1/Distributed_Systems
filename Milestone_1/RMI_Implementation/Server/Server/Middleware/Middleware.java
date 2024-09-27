@@ -1,5 +1,10 @@
 package Server.Middleware;
 
+import Server.Common.*;
+import Server.Interface.*;
+import java.rmi.RemoteException;
+import java.util.Vector;
+
 public abstract class Middleware extends ResourceManager {
     
     // Instance of
@@ -80,31 +85,6 @@ public abstract class Middleware extends ResourceManager {
 	@Override
 	public int queryFlightPrice(int flightNum) throws RemoteException
 	{
-		return flight_resourceManager.queryFlightPrice(flightNum);
-	}
-
-	@Override
-	public boolean deleteRooms(String location) throws RemoteException {
-		return room_resourceManager.deleteRooms(location);
-	}
-
-	@Override
-	public int queryFlight(int flightNum) throws RemoteException {
-		return flight_resourceManager.queryFlight(flightNum);
-	}
-
-	@Override
-	public int queryCars(String location) throws RemoteException {
-		return car_resourceManager.queryCars(location);
-	}
-
-	@Override
-	public int queryRooms(String location) throws RemoteException {
-		return room_resourceManager.queryRooms(location);
-	}
-
-	@Override
-	public int queryFlightPrice(int flightNum) throws RemoteException {
 		return flight_resourceManager.queryFlightPrice(flightNum);
 	}
 
