@@ -7,6 +7,18 @@ import java.rmi.registry.Registry;
 
 import Server.Interface.IResourceManager;
 
+
+/**
+ * Methods the middleware should implement redirection/assignment of tasks for:
+ * add for (flights, cars, rooms)
+ * delete for (flights, cars, rooms)
+ * query for (flights, cars, rooms)
+ * reservation for (fligths, cars, rooms)
+ * bundle function
+ * 
+ * other function:
+ * connectserver to connect the three resources managers
+ */
 public class Middleware extends ResourceManager {
     
     private IResourceManager flight_resource_mnager = null;
@@ -17,6 +29,46 @@ public class Middleware extends ResourceManager {
     {
         super(p_name);
     }
+
+
+    public boolean addRooms(int id, String location, int numRooms, int price) throws RemoteException
+    {
+        Trace.info("Adding rooms");
+        synchronized (room_resource_manager) {
+            try {
+                return room_resource_manager.addRooms(location, numRooms, price);
+            } catch (Exception e) {
+                Trace.error(e.toString());
+                return false;
+            }
+        }
+    }
+
+    public boolean deleteRooms(String location) throws RemoteException
+    {
+        Trace.info("delete rooms");
+        synchronized (room_resource_manager) {
+            try {
+                return room_resource_manager.deleteRooms(location);
+            } catch (Exception e) {
+                Trace.error(e.toString());
+                return false;
+            }
+        }
+    }
+
+    public int queryRooms(int id, String location) throws RemoteException
+    {
+        Trace.info("query Rooms");
+        try {
+            return room_resource_manager.queryRooms(location);
+        } catch (Exception e) {
+            Trace.error(e.toString());
+            return -1;
+        }
+    }
+
+
 
 
 
