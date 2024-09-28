@@ -60,10 +60,11 @@ public class RMIMiddleware extends Middleware {
 	{
 		// 1. expose mideleware as a server to the client
 		
+		RMIMiddleware middleware = null;
 		// Create the RMI middleware entry
 		try {
 			// Create a new Middleware object
-			var middleware = new RMIMiddleware();
+			middleware = new RMIMiddleware();
 
 			// Dynamically generate the stub (client proxy)
 			IResourceManager resourceManager = (IResourceManager)UnicastRemoteObject.exportObject(middleware, 0);
@@ -114,7 +115,6 @@ public class RMIMiddleware extends Middleware {
 
 		// Get a reference to the RMIRegister
 		try {
-			RMIMiddleware middleware = new RMIMiddleware();
 			middleware.connectServers();
 		} 
 		catch (Exception e) {    
