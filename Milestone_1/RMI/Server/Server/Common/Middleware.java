@@ -31,7 +31,7 @@ public class Middleware extends ResourceManager {
     }
 
 
-    public boolean addRooms(int id, String location, int numRooms, int price) throws RemoteException
+    public boolean addRooms(String location, int numRooms, int price) throws RemoteException
     {
         Trace.info("Adding rooms");
         synchronized (room_resource_manager) {
