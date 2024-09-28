@@ -16,6 +16,18 @@ public abstract class Middleware extends ResourceManager {
         super(name);
     }
 
+	public void set_flight_resourceManager(IResourceManager flight_resourceManager) {
+		this.flight_resourceManager = flight_resourceManager;
+	}
+
+	public void set_car_resourceManager(IResourceManager car_resourceManager) {
+		this.car_resourceManager = car_resourceManager;
+	}
+
+	public void set_room_resourceManager(IResourceManager room_resourceManager) {
+		this.room_resourceManager = room_resourceManager;
+	}
+
 	@Override
 	public boolean addFlight(int flightNum, int flightSeats, int flightPrice) throws RemoteException
 	{

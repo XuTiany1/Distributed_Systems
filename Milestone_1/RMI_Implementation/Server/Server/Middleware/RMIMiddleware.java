@@ -151,7 +151,8 @@ public class RMIMiddleware extends Middleware {
 			while (true) {
 				try {
 					Registry registry = LocateRegistry.getRegistry(server, port);
-					this.flight_resourceManager = (IResourceManager)registry.lookup(middleware_rmiPrefix + name);
+					flight_resourceManager = (IResourceManager)registry.lookup(middleware_rmiPrefix + name);
+					this.set_flight_resourceManager(flight_resourceManager);
 					System.out.println("Connected to '" + name + "' flight server [" + server + ":" + port + "/" + middleware_rmiPrefix + name + "]");
 					break;
 				}
@@ -178,7 +179,8 @@ public class RMIMiddleware extends Middleware {
 			while (true) {
 				try {
 					Registry registry = LocateRegistry.getRegistry(server, port);
-					this.car_resourceManager = (IResourceManager)registry.lookup(middleware_rmiPrefix + name);
+					car_resourceManager = (IResourceManager)registry.lookup(middleware_rmiPrefix + name);
+					this.set_car_resourceManager(car_resourceManager);
 					System.out.println("Connected to '" + name + "' car server [" + server + ":" + port + "/" + middleware_rmiPrefix + name + "]");
 					break;
 				}
@@ -205,7 +207,8 @@ public class RMIMiddleware extends Middleware {
 			while (true) {
 				try {
 					Registry registry = LocateRegistry.getRegistry(server, port);
-					this.room_resourceManager = (IResourceManager)registry.lookup(middleware_rmiPrefix + name);
+					room_resourceManager = (IResourceManager)registry.lookup(middleware_rmiPrefix + name);
+					this.set_room_resourceManager(room_resourceManager);
 					System.out.println("Connected to '" + name + "' room server [" + server + ":" + port + "/" + middleware_rmiPrefix + name + "]");
 					break;
 				}
