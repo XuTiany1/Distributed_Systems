@@ -33,8 +33,7 @@ public class TCPClientHandler {
                 this.inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream())); // open an input stream from the server
                 // break;
             } catch (Exception e) {
-                System.err.println("Error from TCPClientHandler: could not connect to server");
-                e.printStackTrace();
+                System.out.println("Waiting for server host " + serverHost + " connection");
             }
         // }
 
