@@ -2,8 +2,7 @@ package Server.Middleware;
 
 import Server.Common.*;
 import Server.Interface.*;
-import java.util.Vector;
-import java.util.ArrayList;
+
 import TCPHandlers.*;
 
 public class TCPMiddleware extends Middleware {
@@ -20,7 +19,7 @@ public class TCPMiddleware extends Middleware {
 		// 1. expose mideleware as a server to the client
 		
 		TCPMiddleware middleware = null;
-		// Create the RMI middleware entry
+		// Create the TCP middleware entry
 		try {
 			// Create a new Middleware object
 			middleware = new TCPMiddleware();
@@ -32,6 +31,7 @@ public class TCPMiddleware extends Middleware {
 				public void run() {
 					try {
                         tcpServerHandler.closeConnection();
+                        System.out.println("TCP Middleware connection to client closed");
 					}
 					catch(Exception e) {
 						System.err.println((char)27 + "[31;1mMiddleware exception: " + (char)27 + "[0mUncaught exception");
