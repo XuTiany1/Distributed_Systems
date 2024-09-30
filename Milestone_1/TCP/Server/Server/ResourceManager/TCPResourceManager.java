@@ -44,7 +44,7 @@ public class TCPResourceManager extends ResourceManager
 					}
 				}
 			});                                       
-			System.out.println("TCP Server connection to Client starting...");
+			System.out.println("TCP Server now listens to client requests!");
 			while (true) {
 				Socket socket = server.serverSocket.accept(); // needs to accept connection from client for every new thread
 				new TCPServerHandler(server, socket).start(); // start thread to receive requests from client!
