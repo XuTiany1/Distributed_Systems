@@ -20,40 +20,7 @@ import java.util.*;
  */
 
 
-
-
- /**
- * IResourceManager.java
- * 
- * This interface defines the operations available for managing resources such as flights, cars, rooms, 
- * and customers in a distributed system. It is designed for use with Java RMI (Remote Method Invocation),
- * allowing clients to remotely add, delete, query, and reserve these resources. 
- * The interface provides flexibility with boolean return values indicating the success of operations.
- * 
- * Functions:
- * - addFlight(int flightNum, int flightSeats, int flightPrice): Adds a flight or updates seats and price for an existing flight.
- * - addCars(String location, int numCars, int price): Adds cars at a specified location.
- * - addRooms(String location, int numRooms, int price): Adds rooms at a specified location.
- * - newCustomer(): Creates a new customer and returns their unique ID.
- * - newCustomer(int cid): Creates a customer with the specified ID.
- * - deleteFlight(int flightNum): Deletes a flight if there are no reservations.
- * - deleteCars(String location): Deletes all cars at a specified location.
- * - deleteRooms(String location): Deletes all rooms at a specified location.
- * - deleteCustomer(int customerID): Deletes a customer and their reservations.
- * - queryFlight(int flightNumber): Queries the number of available seats for a flight.
- * - queryCars(String location): Queries the number of available cars at a location.
- * - queryRooms(String location): Queries the number of available rooms at a location.
- * - queryCustomerInfo(int customerID): Retrieves and returns a formatted bill for a customer.
- * - queryFlightPrice(int flightNumber): Queries the price of a seat on a flight.
- * - queryCarsPrice(String location): Queries the price of cars at a location.
- * - queryRoomsPrice(String location): Queries the price of rooms at a location.
- * - reserveFlight(int customerID, int flightNumber): Reserves a flight for a customer.
- * - reserveCar(int customerID, String location): Reserves a car for a customer at a location.
- * - reserveRoom(int customerID, String location): Reserves a room for a customer at a location.
- * - bundle(int customerID, Vector<String> flightNumbers, String location, boolean car, boolean room): Reserves a bundle of flights, car, and/or room for a customer.
- * - getName(): Returns the name of the resource manager.
- */
-
+// IResourceManager interface defines the operations that can be performed on the resource manager
 public interface IResourceManager extends Remote 
 {
     /**

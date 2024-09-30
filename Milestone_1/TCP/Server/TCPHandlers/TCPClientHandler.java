@@ -6,6 +6,11 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+/*
+    * TCPClientHandler handles TCP connection as a CLIENT to the server it wants to connect to.
+    * It opens a socket to communicate with a server.
+*/
+
 public class TCPClientHandler {
     private Socket socket;
     private PrintWriter outToServer;

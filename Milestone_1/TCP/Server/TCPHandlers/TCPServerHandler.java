@@ -9,6 +9,10 @@ import java.net.Socket;
 import java.util.*;
 import Server.Interface.IResourceManager;
 
+/*
+    * TCPServerHandler handles TCP connection as a SERVER to the client it wants to listen from.
+    * It opens a socket to communicate with a client.
+*/
 public class TCPServerHandler extends Thread {
 
     private Socket socket;
@@ -19,7 +23,7 @@ public class TCPServerHandler extends Thread {
 
     private int port = 4019;
 
-    TCPServerHandler(IResourceManager resourceManager) throws IOException {
+    public TCPServerHandler(IResourceManager resourceManager) throws IOException {
         this.socket = new ServerSocket(port).accept();
         this.resourceManager = resourceManager;
     }
@@ -75,9 +79,11 @@ public class TCPServerHandler extends Thread {
 				int flightNum = toInt(arguments.elementAt(1));
 				int flightSeats = toInt(arguments.elementAt(2));
 				int flightPrice = toInt(arguments.elementAt(3));
-
-				if (resourceManager.addFlight(flightNum, flightSeats, flightPrice)) {
+                
+                Boolean res = resourceManager.addFlight(flightNum, flightSeats, flightPrice);
+				if (res) {
 					System.out.println("Flight added");
+                    return res.toString();
 				} else {
 					System.out.println("Flight could not be added");
 				}
@@ -92,9 +98,17 @@ public class TCPServerHandler extends Thread {
 				int flightNum = toInt(arguments.elementAt(1));
 
 				int seats = resourceManager.queryFlight(flightNum);
-				System.out.println("Number of seats available: " + seats);
-				break;
+				return Integer.toString(seats);
 			}
+        }
+    }
+
+    // closes connection to NO LONGER accept any connections from client
+    public void closeConnection() {
+        try {
+            this.socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
