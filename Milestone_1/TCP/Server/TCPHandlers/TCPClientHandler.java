@@ -1,3 +1,4 @@
+package TCPHandlers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,15 +12,14 @@ public class TCPClientHandler {
     private BufferedReader inFromServer;
 
     private String serverHost;
-    private int serverPort;
+    private int port = 4019;
 
 
     // initializes TCP Connection with server, opening socket.
-    public TCPClientHandler(String serverHost, int serverPort) {
+    public TCPClientHandler(String serverHost) throws IOException {
         this.serverHost = serverHost;
-        this.serverPort = serverPort;
 
-        this.socket = new Socket(serverHost, serverPort); // establish a socket with a server using the given port#
+        this.socket = new Socket(serverHost, port); // establish a socket with a server using the given port#
 
         this.outToServer = new PrintWriter(socket.getOutputStream(), true); // open an output stream to the server
         this.inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream())); // open an input stream from the server
