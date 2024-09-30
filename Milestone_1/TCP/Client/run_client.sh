@@ -1,3 +1,3 @@
 # Usage: ./run_client.sh [<server host>]
 
-java -cp Client.TCPClient $1
+java -cp ../Server/:. Client.TCPClient $1
