@@ -10,22 +10,14 @@ import java.util.*;
 import Server.Interface.IResourceManager;
 
 /*
-    * TCPServerHandler handles TCP connection as a SERVER to the client it wants to listen from.
+    * TCPMiddlewareHandler handles TCP connection as a MIDDLEWARE to the client it wants to listen from.
     * It opens a socket to communicate with a client.
+    * It forwards requests to the Server ResourceManagers.
 */
-public class TCPServerHandler extends Thread {
+public class TCPMiddlewareHandler extends TCPServerHandler {
 
-    private Socket socket;
-    PrintWriter outToClient;
-    BufferedReader inFromClient;
-
-    IResourceManager resourceManager; // Either Middleware or Server could be passed here
-
-    private int port = 4019;
-
-    public TCPServerHandler(IResourceManager resourceManager) throws IOException {
-        this.socket = new ServerSocket(port).accept();
-        this.resourceManager = resourceManager;
+    public TCPMiddlewareHandler(IResourceManager resourceManager) throws IOException {
+        super(resourceManager);
     }
 
     public void run() {
@@ -37,7 +29,8 @@ public class TCPServerHandler extends Thread {
             // read message from client
             String message = null;
             while ((message = inFromClient.readLine()) != null) {
-                System.out.println("TCPServerHandler - client message received: " + message);
+                System.out.println("message received: " + message);
+                String result = "Working!";
 
                 // parse message
                 Vector<String> arguments = parse(message);
@@ -100,8 +93,6 @@ public class TCPServerHandler extends Thread {
 				return Integer.toString(seats);
 			}
         }
-        System.out.println("Invalid command, no matching case found");
-        return "Invalid command, no matching case found";
     }
 
     // closes connection to NO LONGER accept any connections from client
