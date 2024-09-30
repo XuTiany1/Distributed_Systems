@@ -5,6 +5,17 @@ import Server.Interface.*;
 
 import TCPHandlers.*;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+
+/*
+    * TCPMiddleware works as a SERVER to the client (having a ServerSocket to listen to client requests)
+    and as a CLIENT to the Server ResourceManagers (having TCPClientHandlers to send requests to the Server ResourceManagers with sockets open)
+    * TCPMiddlware keeps on listening for requests from client, and when request is received, it forwards the request to the appropriate Server ResourceManagers.
+    
+*/
 public class TCPMiddleware extends Middleware {
     private static String flightServerHost = "localhost";
     private static String carServerHost = "localhost";
@@ -14,23 +25,30 @@ public class TCPMiddleware extends Middleware {
 	private static int carServerPort = 4019;
 	private static int roomServerPort = 4019;
 
+    private ServerSocket serverSocket;
+
+	// middleware port
+	final private int port = 4019;
+
 	public static void main(String args[])
 	{
 		// 1. expose mideleware as a server to the client
-		
-		TCPMiddleware middleware = null;
+
+		// Create a new Middleware object
+		TCPMiddleware middleware;
+        try {
+            middleware = new TCPMiddleware();
+        } catch (IOException e) {
+            System.err.println("Error from TCPMiddleware.main: could not create middleware");
+            e.printStackTrace();
+            return;
+        }
 		// Create the TCP middleware entry
 		try {
-			// Create a new Middleware object
-			middleware = new TCPMiddleware();
-
-            // To accept connections from the client, we need to create a server socket
-            TCPServerHandler tcpServerHandler = new TCPServerHandler(middleware);
-
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 				public void run() {
 					try {
-                        tcpServerHandler.closeConnection();
+                        middleware.serverSocket.close();
                         System.out.println("TCP Middleware connection to client closed");
 					}
 					catch(Exception e) {
@@ -39,7 +57,11 @@ public class TCPMiddleware extends Middleware {
 					}
 				}
 			});                                       
-			System.out.println("TCP Middleware connection to client ready");
+			System.out.println("TCP Middleware connection to Client starting...");
+			while (true) {
+				Socket socket = middleware.serverSocket.accept(); // needs to accept connection from client for every new thread
+				new TCPServerHandler(middleware, socket).start(); // start thread to receive requests from client!
+			}
 		}
 		catch (Exception e) {
 			System.err.println((char)27 + "[31;1mMiddleware exception: " + (char)27 + "[0mUncaught exception");
@@ -71,9 +93,9 @@ public class TCPMiddleware extends Middleware {
 		}
 	}
 
-	public TCPMiddleware()
-	{
+	public TCPMiddleware() throws IOException {
 		super("Middleware");
+        this.serverSocket = new ServerSocket(port);
 	}
 
 	public void connectServers()

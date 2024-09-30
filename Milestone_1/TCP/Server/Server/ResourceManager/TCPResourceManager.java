@@ -17,6 +17,9 @@ public class TCPResourceManager extends ResourceManager
 	// server socket
 	private ServerSocket serverSocket;
 
+	// server port
+	final private int port = 4019;
+
 	public static void main(String args[])
 	{
 		if (args.length > 0)
@@ -28,9 +31,6 @@ public class TCPResourceManager extends ResourceManager
 		try {
 			// Create a new Server object
 			TCPResourceManager server = new TCPResourceManager(serverName);
-
-			// To accept connections from the client, we need to create a server socket
-            // TCPServerHandler tcpServerHandler = new TCPServerHandler(server);
 
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 				public void run() {
@@ -44,9 +44,9 @@ public class TCPResourceManager extends ResourceManager
 					}
 				}
 			});                                       
-			System.out.println("TCP Server connection to client starting...");
+			System.out.println("TCP Server connection to Client starting...");
 			while (true) {
-				Socket socket = server.serverSocket.accept();
+				Socket socket = server.serverSocket.accept(); // needs to accept connection from client for every new thread
 				new TCPServerHandler(server, socket).start(); // start thread to receive requests from client!
 			}
 			// tcpServerHandler.start();	
@@ -61,6 +61,6 @@ public class TCPResourceManager extends ResourceManager
 
 	public TCPResourceManager(String name) throws IOException {
 		super(name);
-		this.serverSocket = new ServerSocket(4019);
+		this.serverSocket = new ServerSocket(port);
 	}
 }

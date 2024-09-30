@@ -12,6 +12,10 @@ import Server.Interface.IResourceManager;
 /*
     * TCPServerHandler handles TCP connection as a SERVER to the client it wants to listen from.
     * It opens a socket to communicate with a client.
+    * Note that this class is a thread, so multiple requests from client can be handled at the same time by running multiple TCPServerHandlers.
+    * ALSO note that a ResourceManager to the constructor.
+        * If the passed ResourceManager is a Middleware, the TCPServerHandler will forward the requests to the ResourceManager by calling the execute function.
+        * If the passed ResourceManager is a Server, the TCPServerHandler will execute the function directly, also by calling the execute function.
 */
 public class TCPServerHandler extends Thread {
 
