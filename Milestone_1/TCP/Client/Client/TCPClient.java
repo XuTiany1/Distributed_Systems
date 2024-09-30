@@ -20,6 +20,7 @@ public class TCPClient extends Client {
 		try {
             TCPClient client = new TCPClient();
 			client.connectServer();
+            client.start(); // start getting input from command line, and send to server
 		} 
 		catch (Exception e) {    
 			System.err.println((char)27 + "[31;1mClient exception: " + (char)27 + "[0mUncaught exception");

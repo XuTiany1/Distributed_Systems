@@ -15,16 +15,17 @@ import Server.Interface.IResourceManager;
 */
 public class TCPServerHandler extends Thread {
 
+    private int port = 4019;
+    // private ServerSocket serverSocket = new ServerSocket(port);
     private Socket socket;
     PrintWriter outToClient;
     BufferedReader inFromClient;
 
     IResourceManager resourceManager; // Either Middleware or Server could be passed here
 
-    private int port = 4019;
 
-    public TCPServerHandler(IResourceManager resourceManager) throws IOException {
-        this.socket = new ServerSocket(port).accept();
+    public TCPServerHandler(IResourceManager resourceManager, Socket socket) throws IOException {
+        this.socket = socket;
         this.resourceManager = resourceManager;
     }
 
@@ -33,9 +34,11 @@ public class TCPServerHandler extends Thread {
             // create new buffers for input and output for every run
             this.inFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.outToClient = new PrintWriter(socket.getOutputStream(), true);
+            System.out.println("Running TCPServerHandler thread!");
 
             // read message from client
             String message = null;
+            // message = inFromClient.readLine();
             while ((message = inFromClient.readLine()) != null) {
                 System.out.println("TCPServerHandler - client message received: " + message);
 
@@ -47,6 +50,8 @@ public class TCPServerHandler extends Thread {
 
                 outToClient.println(res); // send execution result to client
             }
+
+            System.out.println("TCPServerHandler - closing socket...");
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -123,7 +128,7 @@ public class TCPServerHandler extends Thread {
         return (Integer.valueOf(string)).intValue();
     }
 
-    public static boolean toBoolean(String string)// throws Exception
+    public static boolean toBoolean(String string)
     {
         return (Boolean.valueOf(string)).booleanValue();
     }

@@ -24,10 +24,20 @@ public class TCPClientHandler {
     public TCPClientHandler(String serverHost) throws IOException {
         this.serverHost = serverHost;
 
-        this.socket = new Socket(serverHost, port); // establish a socket with a server using the given port#
+        // while (true) {
+            try {
+                System.out.println("TCPClientHandler - connecting to server...");
+                this.socket = new Socket(serverHost, port); // establish a socket with a server using the given port#
 
-        this.outToServer = new PrintWriter(socket.getOutputStream(), true); // open an output stream to the server
-        this.inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream())); // open an input stream from the server
+                this.outToServer = new PrintWriter(socket.getOutputStream(), true); // open an output stream to the server
+                this.inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream())); // open an input stream from the server
+                // break;
+            } catch (Exception e) {
+                System.err.println("Error from TCPClientHandler: could not connect to server");
+                e.printStackTrace();
+            }
+        // }
+
     }
 
     // closes connection to server by closing socket

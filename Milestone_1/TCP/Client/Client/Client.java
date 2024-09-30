@@ -100,6 +100,7 @@ public abstract class Client {
                 System.out.println("Querying a flight");
                 System.out.println("-Flight Number: " + arguments.elementAt(1));
 
+				System.out.println("");
                 int flightNum = toInt(arguments.elementAt(1));
 
                 // query flight by sending tcp request to server
