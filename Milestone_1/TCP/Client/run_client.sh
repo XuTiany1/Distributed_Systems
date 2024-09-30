@@ -1,3 +1,3 @@
-# Usage: ./run_client.sh [<server_hostname> [<server_rmiobject>]]
+# Usage: ./run_client.sh [<server host>]
 
-java -cp ../Server/RMIInterface.jar:. Client.Client $1 $2
+java -cp Client.TCPClient $1
