@@ -99,16 +99,337 @@ public class TCPServerHandler extends Thread {
 				}
 				break;
             }
-			case "queryflight": {
+            case "addcars": {
+				checkArgumentsCount(4, arguments.size());
+
+				System.out.println("Adding new cars");
+				System.out.println("-Car Location: " + arguments.elementAt(1));
+				System.out.println("-Number of Cars: " + arguments.elementAt(2));
+				System.out.println("-Car Price: " + arguments.elementAt(3));
+
+				String location = arguments.elementAt(1);
+				int numCars = toInt(arguments.elementAt(2));
+				int price = toInt(arguments.elementAt(3));
+
+				Boolean res = resourceManager.addCars(location, numCars, price);
+				System.out.println("Cars added with response: " + res);
+				if (res) {
+					System.out.println("Cars added");
+                    return res.toString();
+				} else {
+					System.out.println("Cars could not be added");
+				}
+				break;
+			}
+			case "addrooms": {
+				checkArgumentsCount(4, arguments.size());
+
+				System.out.println("Adding new rooms");
+				System.out.println("-Room Location: " + arguments.elementAt(1));
+				System.out.println("-Number of Rooms: " + arguments.elementAt(2));
+				System.out.println("-Room Price: " + arguments.elementAt(3));
+
+	       		String location = arguments.elementAt(1);
+				int numRooms = toInt(arguments.elementAt(2));
+				int price = toInt(arguments.elementAt(3));
+
+				Boolean res = resourceManager.addRooms(location, numRooms, price);
+				System.out.println("Rooms added with response: " + res);
+
+				if (res) {
+					System.out.println("Rooms added");
+                    return res.toString();
+				} else {
+					System.out.println("Rooms could not be added");
+				}
+				break;
+			}
+			case "addcustomer": {
+				checkArgumentsCount(1, arguments.size());
+
+				System.out.println("Adding a new customer:=");
+
+				int customer = resourceManager.newCustomer();
+
+				System.out.println("Add customer ID: " + customer);
+                return Integer.toString(customer);
+			}
+			case "addcustomerid": {
 				checkArgumentsCount(2, arguments.size());
 
-				System.out.println("Querying a flight");
+				System.out.println("Adding a new customer");
+				System.out.println("-Customer ID: " + arguments.elementAt(1));
+
+				int customerID = toInt(arguments.elementAt(1));
+
+				Boolean res = resourceManager.newCustomer(customerID);
+
+				if (res) {
+					System.out.println("Add customer ID: " + customerID);
+                    return res.toString();
+				} else {
+					System.out.println("Customer could not be added");
+				}
+				break;
+			}
+			case "deleteflight": {
+				checkArgumentsCount(2, arguments.size());
+
+				System.out.println("Deleting a flight");
 				System.out.println("-Flight Number: " + arguments.elementAt(1));
 
 				int flightNum = toInt(arguments.elementAt(1));
 
-				int seats = resourceManager.queryFlight(flightNum);
+				Boolean res = resourceManager.deleteFlight(flightNum);
+
+				if (res) {
+					System.out.println("Flight Deleted");
+                    return res.toString();
+				} else {
+					System.out.println("Flight could not be deleted");
+				}
+				break;
+			}
+			case "deletecars": {
+				checkArgumentsCount(2, arguments.size());
+
+				System.out.println("Deleting all cars at a particular location");
+				System.out.println("-Car Location: " + arguments.elementAt(1));
+
+				String location = arguments.elementAt(1);
+
+				Boolean res = resourceManager.deleteCars(location);
+
+				if (res) {
+					System.out.println("Cars Deleted");
+                    return res.toString();
+				} else {
+					System.out.println("Cars could not be deleted");
+				}
+				break;
+			}
+			case "deleterooms": {
+				checkArgumentsCount(2, arguments.size());
+
+				System.out.println("Deleting all rooms at a particular location");
+				System.out.println("-Car Location: " + arguments.elementAt(1));
+
+				String location = arguments.elementAt(1);
+
+				Boolean res = resourceManager.deleteRooms(location);
+
+				if (res) {
+					System.out.println("Rooms Deleted");
+                    return res.toString();
+				} else {
+					System.out.println("Rooms could not be deleted");
+				}
+				break;
+			}
+			case "deletecustomer": {
+				checkArgumentsCount(2, arguments.size());
+
+				System.out.println("Deleting a customer from the database");
+				System.out.println("-Customer ID: " + arguments.elementAt(1));
+				
+				int customerID = toInt(arguments.elementAt(1));
+
+				Boolean res = resourceManager.deleteCustomer(customerID);
+
+				if (res) {
+					System.out.println("Customer Deleted");
+                    return res.toString();
+				} else {
+					System.out.println("Customer could not be deleted");
+				}
+				break;
+			}
+            case "queryflight": {
+                checkArgumentsCount(2, arguments.size());
+
+                System.out.println("Querying a flight");
+                System.out.println("-Flight Number: " + arguments.elementAt(1));
+
+                int flightNum = toInt(arguments.elementAt(1));
+
+                int seats = resourceManager.queryFlight(flightNum);
 				return Integer.toString(seats);
+            }
+			case "querycars": {
+				checkArgumentsCount(2, arguments.size());
+
+				System.out.println("Querying cars location");
+				System.out.println("-Car Location: " + arguments.elementAt(1));
+				
+				String location = arguments.elementAt(1);
+
+				int numCars = resourceManager.queryCars(location);
+				System.out.println("Number of cars at this location: " + numCars);
+                return Integer.toString(numCars);
+			}
+			case "queryrooms": {
+				checkArgumentsCount(2, arguments.size());
+
+				System.out.println("Querying rooms location");
+				System.out.println("-Room Location: " + arguments.elementAt(1));
+				
+			
+				String location = arguments.elementAt(1);
+
+				int numRoom = resourceManager.queryRooms(location);
+				System.out.println("Number of rooms at this location: " + numRoom);
+                return Integer.toString(numRoom);
+			}
+			case "querycustomer": {
+				checkArgumentsCount(2, arguments.size());
+
+				System.out.println("Querying customer information");
+				System.out.println("-Customer ID: " + arguments.elementAt(1));
+
+				int customerID = toInt(arguments.elementAt(1));
+
+				String bill = resourceManager.queryCustomerInfo(customerID);
+				System.out.print(bill);
+                return bill;              
+			}
+			case "queryflightprice": {
+				checkArgumentsCount(2, arguments.size());
+				
+				System.out.println("Querying a flight price");
+				System.out.println("-Flight Number: " + arguments.elementAt(1));
+
+				int flightNum = toInt(arguments.elementAt(1));
+
+				int price = resourceManager.queryFlightPrice(flightNum);
+				System.out.println("Price of a seat: " + price);
+                return Integer.toString(price);
+			}
+			case "querycarsprice": {
+				checkArgumentsCount(2, arguments.size());
+
+				System.out.println("Querying cars price");
+				System.out.println("-Car Location: " + arguments.elementAt(1));
+
+				String location = arguments.elementAt(1);
+
+				int price = resourceManager.queryCarsPrice(location);
+
+				System.out.println("Price of cars at this location: " + price);
+                return Integer.toString(price);
+			}
+			case "queryroomprice": {
+				checkArgumentsCount(2, arguments.size());
+
+				System.out.println("Querying rooms price");
+				System.out.println("-Room Location: " + arguments.elementAt(1));
+
+				String location = arguments.elementAt(1);
+
+				int price = resourceManager.queryRoomsPrice(location);
+				System.out.println("Price of rooms at this location: " + price);
+                return Integer.toString(price);
+			}
+			case "reserveflight": {
+				checkArgumentsCount(3, arguments.size());
+
+				System.out.println("Reserving seat in a flight");
+				System.out.println("-Customer ID: " + arguments.elementAt(1));
+				System.out.println("-Flight Number: " + arguments.elementAt(2));
+
+				int customerID = toInt(arguments.elementAt(1));
+				int flightNum = toInt(arguments.elementAt(2));
+
+				Boolean res = resourceManager.reserveFlight(customerID, flightNum);
+
+				if (res) {
+					System.out.println("Flight Reserved");
+                    return res.toString();
+				} else {
+					System.out.println("Flight could not be reserved");
+				}
+				break;
+			}
+			case "reservecar": {
+				checkArgumentsCount(3, arguments.size());
+
+				System.out.println("Reserving a car at a location");
+				System.out.println("-Customer ID: " + arguments.elementAt(1));
+				System.out.println("-Car Location: " + arguments.elementAt(2));
+
+				int customerID = toInt(arguments.elementAt(1));
+				String location = arguments.elementAt(2);
+
+				Boolean res = resourceManager.reserveCar(customerID, location);
+
+				if (res) {
+					System.out.println("Car Reserved");
+                    return res.toString();
+				} else {
+					System.out.println("Car could not be reserved");
+				}
+				break;
+			}
+			case "reserveroom": {
+				checkArgumentsCount(3, arguments.size());
+
+				System.out.println("Reserving a room at a location");
+				System.out.println("-Customer ID: " + arguments.elementAt(1));
+				System.out.println("-Room Location: " + arguments.elementAt(2));
+				
+				int customerID = toInt(arguments.elementAt(1));
+				String location = arguments.elementAt(2);
+
+				Boolean res = resourceManager.reserveRoom(customerID, location);
+
+				if (res) {
+					System.out.println("Room Reserved");
+                    return res.toString();
+				} else {
+					System.out.println("Room could not be reserved");
+				}
+				break;
+			}
+			case "bundle": {
+				if (arguments.size() < 6) {
+					System.err.println((char)27 + "[31;1mCommand exception: " + (char)27 + "[0mBundle command expects at least 6 arguments. Location \"help\" or \"help,<CommandName>\"");
+					break;
+				}
+
+				System.out.println("Reserving an bundle");
+				System.out.println("-Customer ID: " + arguments.elementAt(1));
+				for (int i = 0; i < arguments.size() - 5; ++i)
+				{
+					System.out.println("-Flight Number: " + arguments.elementAt(2+i));
+				}
+				System.out.println("-Location for Car/Room: " + arguments.elementAt(arguments.size()-3));
+				System.out.println("-Book Car: " + arguments.elementAt(arguments.size()-2));
+				System.out.println("-Book Room: " + arguments.elementAt(arguments.size()-1));
+
+				int customerID = toInt(arguments.elementAt(1));
+				Vector<String> flightNumbers = new Vector<String>();
+				for (int i = 0; i < arguments.size() - 5; ++i)
+				{
+					flightNumbers.addElement(arguments.elementAt(2+i));
+				}
+				String location = arguments.elementAt(arguments.size()-3);
+				Boolean car = toBoolean(arguments.elementAt(arguments.size()-2));
+				Boolean room = toBoolean(arguments.elementAt(arguments.size()-1));
+
+				String strArg = "bundle," + customerID;
+				for (int i = 0; i < flightNumbers.size(); ++i)
+				{
+					strArg += "," + flightNumbers.elementAt(i);
+				}
+				strArg += "," + location + "," + car + "," + room;
+
+				Boolean res = resourceManager.bundle(customerID, flightNumbers, location, car, room);
+
+				if (res) {
+					System.out.println("Bundle Reserved");
+				} else {
+					System.out.println("Bundle could not be reserved");
+				}
+				break;
 			}
         }
         System.out.println("Invalid command, no matching case found");

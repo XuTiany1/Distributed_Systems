@@ -144,7 +144,7 @@ public abstract class Client {
 
 				System.out.println("Adding a new customer:=");
 
-				int customer = toInt(tcpClientHandler.send("newcustomer"));
+				int customer = toInt(tcpClientHandler.send("addcustomer"));
 
 				System.out.println("Add customer ID: " + customer);
 				break;
@@ -158,7 +158,7 @@ public abstract class Client {
 				int customerID = toInt(arguments.elementAt(1));
 
 				// add customer by sending tcp request to server
-				String res = tcpClientHandler.send("newcustomer," + customerID);
+				String res = tcpClientHandler.send("addcustomerid," + customerID);
 
 				if (toBoolean(res)) {
 					System.out.println("Add customer ID: " + customerID);
