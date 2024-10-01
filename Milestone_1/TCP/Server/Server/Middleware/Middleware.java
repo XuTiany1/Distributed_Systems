@@ -5,7 +5,9 @@ import TCPHandlers.*;
 import java.util.Calendar;
 import java.util.Vector;
 
-// Customer operations are handled in middleware
+// Customer operations are handled in middleware.
+// Note the three TCPClientHandler instances for flight, car, and room servers. 
+	// those instances are used to communicate with the respective servers.
 public abstract class Middleware extends ResourceManager {
 
     // Instance of

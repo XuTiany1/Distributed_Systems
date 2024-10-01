@@ -5,6 +5,7 @@ import Server.Interface.*;
 
 import TCPHandlers.*;
 
+// TCPClient initializes the TCPClientHandler to enable connection with server (middleware) and starts the client.
 public class TCPClient extends Client {
     private static String serverHost = "localhost";
 

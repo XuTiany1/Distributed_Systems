@@ -7,6 +7,9 @@ import java.io.*;
 
 import TCPHandlers.TCPClientHandler;
 
+
+// Client takes User input and sends it to the server (middleware).
+// Note that TCPClientHandler is used to establish a connection with the server (middleware).
 public abstract class Client {
 
     // Instance of 
