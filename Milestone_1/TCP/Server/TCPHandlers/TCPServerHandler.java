@@ -43,6 +43,8 @@ public class TCPServerHandler extends Thread {
             // read message from client
             String message = null;
             // message = inFromClient.readLine();
+
+            // Read frp, inFromClient and output to outToClient
             while ((message = inFromClient.readLine()) != null) {
                 System.out.println("TCPServerHandler - client message received: " + message);
 

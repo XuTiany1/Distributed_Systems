@@ -374,6 +374,7 @@ public class ResourceManager implements IResourceManager
 	// Reserve bundle 
 	public boolean bundle(int customerId, Vector<String> flightNumbers, String location, boolean car, boolean room)
 	{
+		
 		return false;
 	}
 
