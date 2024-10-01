@@ -105,15 +105,6 @@ public class ResourceManager implements IResourceManager
 	// Reserve an item
 	protected boolean reserveItem(int customerID, String key, String location)
 	{
-		Trace.info("RM::reserveItem(customer=" + customerID + ", " + key + ", " + location + ") called" );        
-		// Read customer object if it exists (and read lock it)
-		Customer customer = (Customer)readData(Customer.getKey(customerID));
-		if (customer == null)
-		{
-			Trace.warn("RM::reserveItem(" + customerID + ", " + key + ", " + location + ")  failed--customer doesn't exist");
-			return false;
-		} 
-
 		// Check if the item is available
 		ReservableItem item = (ReservableItem)readData(key);
 		if (item == null)
@@ -128,8 +119,6 @@ public class ResourceManager implements IResourceManager
 		}
 		else
 		{            
-			customer.reserve(key, location, item.getPrice());        
-			writeData(customer.getKey(), customer);
 
 			// Decrease the number of available items in the storage
 			item.setCount(item.getCount() - 1);
@@ -294,63 +283,18 @@ public class ResourceManager implements IResourceManager
 
 	public int newCustomer()
 	{
-        	Trace.info("RM::newCustomer() called");
-		// Generate a globally unique ID for the new customer; if it generates duplicates for you, then adjust
-		int cid = Integer.parseInt(String.valueOf(Calendar.getInstance().get(Calendar.MILLISECOND)) +
-			String.valueOf(Math.round(Math.random() * 100 + 1)));
-		Customer customer = new Customer(cid);
-		writeData(customer.getKey(), customer);
-		Trace.info("RM::newCustomer(" + cid + ") returns ID=" + cid);
-		return cid;
+		// customer operations are handled by the middleware
+		return -1;
 	}
 
 	public boolean newCustomer(int customerID)
 	{
-		Trace.info("RM::newCustomer(" + customerID + ") called");
-		Customer customer = (Customer)readData(Customer.getKey(customerID));
-		if (customer == null)
-		{
-			customer = new Customer(customerID);
-			writeData(customer.getKey(), customer);
-			Trace.info("RM::newCustomer(" + customerID + ") created a new customer");
-			return true;
-		}
-		else
-		{
-			Trace.info("INFO: RM::newCustomer(" + customerID + ") failed--customer already exists");
-			return false;
-		}
+		return false; // customer operations are handled by the middleware
 	}
 
 	public boolean deleteCustomer(int customerID)
 	{
-		Trace.info("RM::deleteCustomer(" + customerID + ") called");
-		Customer customer = (Customer)readData(Customer.getKey(customerID));
-		if (customer == null)
-		{
-			Trace.warn("RM::deleteCustomer(" + customerID + ") failed--customer doesn't exist");
-			return false;
-		}
-		else
-		{            
-			// Increase the reserved numbers of all reservable items which the customer reserved. 
- 			RMHashMap reservations = customer.getReservations();
-			for (String reservedKey : reservations.keySet())
-			{        
-				ReservedItem reserveditem = customer.getReservedItem(reservedKey);
-				Trace.info("RM::deleteCustomer(" + customerID + ") has reserved " + reserveditem.getKey() + " " +  reserveditem.getCount() +  " times");
-				ReservableItem item  = (ReservableItem)readData(reserveditem.getKey());
-				Trace.info("RM::deleteCustomer(" + customerID + ") has reserved " + reserveditem.getKey() + " which is reserved " +  item.getReserved() +  " times and is still available " + item.getCount() + " times");
-				item.setReserved(item.getReserved() - reserveditem.getCount());
-				item.setCount(item.getCount() + reserveditem.getCount());
-				writeData(item.getKey(), item);
-			}
-
-			// Remove the customer from the storage
-			removeData(customer.getKey());
-			Trace.info("RM::deleteCustomer(" + customerID + ") succeeded");
-			return true;
-		}
+		return false; // customer operations are handled by the middleware
 	}
 
 	// Adds flight reservation to this customer
