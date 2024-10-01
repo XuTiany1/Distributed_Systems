@@ -388,8 +388,73 @@ public abstract class Middleware extends ResourceManager {
 	@Override
 	public boolean bundle(int customerId, Vector<String> flightNumbers, String location, boolean car, boolean room)
 	{
-		
-		return false;
+		// Read customer object if it exists (and read lock it)
+        Customer customer = (Customer)readData(Customer.getKey(customerID));
+        if (customer == null)
+        {
+            Trace.warn("RM::reserveroom failed--customer doesn't exist");
+            return false;
+        }
+        synchronized (customer) {            
+            synchronized (flightTcpClientHandler) {
+                for (String flightnum : flightNumbers) {
+                    System.out.println("bundle: reserving flights");
+                    // send request to flight server to get price
+                    String price = flightTcpClientHandler.send("queryflightprice," + flightnum);
+
+                    // send request to flight server
+                    String res = flightTcpClientHandler.send("reserveflight," + customerId + "," + flightnum);
+
+                    if (toBoolean(res)) {
+                        customer.reserve(Flight.getKey(key), key, toInt(price));
+                        writeData(customer.getKey(), customer);
+                    } else {
+                        return false;
+                    }
+                }
+
+            
+            }
+        }
+
+        if (room) {
+            synchronized (roomTcpClientHandler) {
+                System.out.println("bundle: reserving room");
+                // send request to room server to get price
+                String price = roomTcpClientHandler.send("queryroomsprice," + location);
+
+                // send request to room server
+                String res = roomTcpClientHandler.send("reserveroom," + customerId + "," + location);
+
+                if (toBoolean(res)) {
+                    customer.reserve(Room.getKey(location), location, toInt(price));
+                    writeData(customer.getKey(), customer);
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        if (car) {
+            synchronized (carTcpClientHandler) {
+                System.out.println("bundle: reserving car");
+                // send request to car server to get price
+                String price = carTcpClientHandler.send("querycarsprice," + location);
+
+                // send request to car server
+                String res = carTcpClientHandler.send("reservecar," + customerId + "," + location);
+
+                if (toBoolean(res)) {
+                    customer.reserve(Car.getKey(location), location, toInt(price));
+                    writeData(customer.getKey(), customer);
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        System.out.println("bundle: reservation successful");
+		return true;
 	}
         
     // function to convert string to boolean

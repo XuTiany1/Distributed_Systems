@@ -426,6 +426,7 @@ public class TCPServerHandler extends Thread {
 
 				if (res) {
 					System.out.println("Bundle Reserved");
+                    return res.toString();
 				} else {
 					System.out.println("Bundle could not be reserved");
 				}
