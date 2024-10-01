@@ -317,7 +317,7 @@ public class TCPServerHandler extends Thread {
 				System.out.println("Price of cars at this location: " + price);
                 return Integer.toString(price);
 			}
-			case "queryroomprice": {
+			case "queryroomsprice": {
 				checkArgumentsCount(2, arguments.size());
 
 				System.out.println("Querying rooms price");
