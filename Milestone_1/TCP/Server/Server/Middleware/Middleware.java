@@ -389,7 +389,7 @@ public abstract class Middleware extends ResourceManager {
 	public boolean bundle(int customerId, Vector<String> flightNumbers, String location, boolean car, boolean room)
 	{
 		// Read customer object if it exists (and read lock it)
-        Customer customer = (Customer)readData(Customer.getKey(customerID));
+        Customer customer = (Customer)readData(Customer.getKey(customerId));
         if (customer == null)
         {
             Trace.warn("RM::reserveroom failed--customer doesn't exist");
@@ -406,7 +406,7 @@ public abstract class Middleware extends ResourceManager {
                     String res = flightTcpClientHandler.send("reserveflight," + customerId + "," + flightnum);
 
                     if (toBoolean(res)) {
-                        customer.reserve(Flight.getKey(key), key, toInt(price));
+                        customer.reserve(Flight.getKey(toInt(flightnum)), flightnum, toInt(price));
                         writeData(customer.getKey(), customer);
                     } else {
                         return false;
