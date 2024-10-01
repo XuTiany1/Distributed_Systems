@@ -187,4 +187,11 @@ public interface IResourceManager extends Remote
      * @return Name
      */
     public String getName();
+
+    /**
+     * Update reservation.
+     *
+     * @return Success
+     */
+    public boolean updateReservation(String itemKey, int itemCount);
 }

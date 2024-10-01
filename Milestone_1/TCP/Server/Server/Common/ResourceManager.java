@@ -374,13 +374,26 @@ public class ResourceManager implements IResourceManager
 	// Reserve bundle 
 	public boolean bundle(int customerId, Vector<String> flightNumbers, String location, boolean car, boolean room)
 	{
-		
+
 		return false;
 	}
 
 	public String getName()
 	{
 		return m_name;
+	}
+
+	public boolean updateReservation(String itemKey, int itemCount){
+		try {
+			ReservableItem item  = (ReservableItem)readData(itemKey);
+
+			item.setReserved(item.getReserved() - itemCount);
+			item.setCount(item.getCount() + itemCount);
+			writeData(item.getKey(), item);
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
 	}
 }
  

@@ -274,11 +274,24 @@ public abstract class Middleware extends ResourceManager {
 			{        
 				ReservedItem reserveditem = customer.getReservedItem(reservedKey);
 				Trace.info("RM::deleteCustomer(" + customerID + ") has reserved " + reserveditem.getKey() + " " +  reserveditem.getCount() +  " times");
-				ReservableItem item  = (ReservableItem)readData(reserveditem.getKey());
-				Trace.info("RM::deleteCustomer(" + customerID + ") has reserved " + reserveditem.getKey() + " which is reserved " +  item.getReserved() +  " times and is still available " + item.getCount() + " times");
-				item.setReserved(item.getReserved() - reserveditem.getCount());
-				item.setCount(item.getCount() + reserveditem.getCount());
-				writeData(item.getKey(), item);
+                
+                synchronized (flightTcpClientHandler) {
+                    if (reserveditem.getKey().contains("flight")) {
+                        flightTcpClientHandler.send("updatereservation," + reserveditem.getKey() + "," + reserveditem.getCount());
+                    }
+                }
+
+                synchronized (carTcpClientHandler) {
+                    if (reserveditem.getKey().contains("car")) {
+                        carTcpClientHandler.send("updatereservation," + reserveditem.getKey() + "," + reserveditem.getCount());
+                    }
+                }
+
+                synchronized (roomTcpClientHandler) {
+                    if (reserveditem.getKey().contains("room")) {
+                        roomTcpClientHandler.send("updatereservation," + reserveditem.getKey() + "," + reserveditem.getCount());
+                    }
+                }
 			}
 
 			// Remove the customer from the storage
@@ -292,19 +305,84 @@ public abstract class Middleware extends ResourceManager {
 	@Override
 	public boolean reserveFlight(int customerID, int flightNum)
 	{
-		return reserveItem(customerID, Flight.getKey(flightNum), String.valueOf(flightNum));
+        // Read customer object if it exists (and read lock it)
+		Customer customer = (Customer)readData(Customer.getKey(customerID));
+		if (customer == null)
+		{
+			Trace.warn("RM::reserveflight failed--customer doesn't exist");
+			return false;
+		}
+
+
+        synchronized (flightTcpClientHandler) {
+            // send request to flight server to get price
+            String price = flightTcpClientHandler.send("queryflightprice," + flightNum);
+
+            // send request to flight server
+            String res = flightTcpClientHandler.send("reserveflight," + customerID + "," + flightNum);
+
+            if (toBoolean(res)) {
+                customer.reserve(Flight.getKey(flightNum), String.valueOf(flightNum), toInt(price));
+                writeData(customer.getKey(), customer);
+                return true;
+            }
+            return false;
+        }
 	}
 
 	@Override
 	public boolean reserveCar(int customerID, String location)
 	{
-		return reserveItem(customerID, Car.getKey(location), location);
+		// Read customer object if it exists (and read lock it)
+		Customer customer = (Customer)readData(Customer.getKey(customerID));
+		if (customer == null)
+		{
+			Trace.warn("RM::reservecar failed--customer doesn't exist");
+			return false;
+		}
+
+        synchronized (carTcpClientHandler) {
+            // send request to car server to oget price
+
+            String price = carTcpClientHandler.send("querycarsprice," + location);
+
+            // send request to car server
+            String res = carTcpClientHandler.send("reservecar," + customerID + "," + location);
+
+            if (toBoolean(res)) {
+                customer.reserve(Car.getKey(location), location, toInt(price));
+                writeData(customer.getKey(), customer);
+                return true;
+            }
+            return false;
+        }
 	}
 
 	@Override
     public boolean reserveRoom(int customerID, String location)
 	{
-		return reserveItem(customerID, Room.getKey(location), location);
+		// Read customer object if it exists (and read lock it)
+        Customer customer = (Customer)readData(Customer.getKey(customerID));
+        if (customer == null)
+        {
+            Trace.warn("RM::reserveroom failed--customer doesn't exist");
+            return false;
+        }
+
+        synchronized (roomTcpClientHandler) {
+            // send request to room server to get price
+            String price = roomTcpClientHandler.send("queryroomsprice," + location);
+
+            // send request to room server
+            String res = roomTcpClientHandler.send("reserveroom," + customerID + "," + location);
+
+            if (toBoolean(res)) {
+                customer.reserve(Room.getKey(location), location, toInt(price));
+                writeData(customer.getKey(), customer);
+                return true;
+            }
+            return false;
+        }
 	}
 
 	@Override
@@ -313,8 +391,6 @@ public abstract class Middleware extends ResourceManager {
 		
 		return false;
 	}
-
-
         
     // function to convert string to boolean
     public static boolean toBoolean(String string) {

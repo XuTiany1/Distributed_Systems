@@ -431,6 +431,26 @@ public class TCPServerHandler extends Thread {
 				}
 				break;
 			}
+            case "updatereservation": {
+                checkArgumentsCount(3, arguments.size());
+
+                System.out.println("Updating reservation");
+                System.out.println("-Reserved Item Key: " + arguments.elementAt(1));
+                System.out.println("-New Item Count: " + arguments.elementAt(2));
+
+                String reservedItemKey = arguments.elementAt(1);
+                int newItemCount = toInt(arguments.elementAt(2));
+
+                Boolean res = resourceManager.updateReservation(reservedItemKey, newItemCount);
+
+                if (res) {
+                    System.out.println("Reservation Updated");
+                    return res.toString();
+                } else {
+                    System.out.println("Reservation could not be updated");
+                }
+                break;
+            }
         }
         System.out.println("Invalid command, no matching case found");
         return "Invalid command, no matching case found";
