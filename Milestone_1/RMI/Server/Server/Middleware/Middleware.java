@@ -227,7 +227,72 @@ public abstract class Middleware extends ResourceManager {
 
 	@Override
 	public boolean bundle(int customerID, Vector<String> flightNumbers, String location, boolean car, boolean room) throws RemoteException {
-		return false;
+		// Read customer object if it exists (and read lock it)
+        Customer customer = (Customer) readData(Customer.getKey(customerID));
+        if (customer == null) {
+            Trace.warn("RM::reserveroom failed--customer doesn't exist");
+            return false;
+        }
+
+		for (String flightnum : flightNumbers) {
+			System.out.println("bundle: reserving flights");
+			int price = flight_resourceManager.queryFlightPrice(toInt(flightnum));
+
+			Boolean res = flight_resourceManager.reserveFlight(customerID, toInt(flightnum));
+
+			if (res) {
+				customer.reserve(Flight.getKey(toInt(flightnum)), flightnum, price);
+				writeData(customer.getKey(), customer);
+			} else {
+				return false;
+			}
+		}
+
+		if (room) {
+
+			System.out.println("bundle: reserving room");
+
+			int price = room_resourceManager.queryRoomsPrice(location);
+
+			Boolean res = room_resourceManager.reserveRoom(customerID, location);
+
+			if (res) {
+				customer.reserve(Room.getKey(location), location, price);
+				writeData(customer.getKey(), customer);
+			} else {
+				return false;
+			}
+
+		}
+
+		if (car) {
+			
+			System.out.println("bundle: reserving car");
+
+			int price = car_resourceManager.queryCarsPrice(location);
+
+			Boolean res = car_resourceManager.reserveCar(customerID, location);
+
+			if (res) {
+				customer.reserve(Car.getKey(location), location, price);
+				writeData(customer.getKey(), customer);
+			} else {
+				return false;
+			}
+		}
+
+		System.out.println("bundle: reservation successful");
+		return true;
 	}
+
+	// function to convert string to boolean
+    public static boolean toBoolean(String string) {
+        return (Boolean.valueOf(string)).booleanValue();
+    }
+
+    // function to convert string to integer
+    public static int toInt(String string) {
+        return (Integer.valueOf(string)).intValue();
+    }
     
 }
