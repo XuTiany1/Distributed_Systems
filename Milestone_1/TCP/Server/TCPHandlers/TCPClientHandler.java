@@ -64,7 +64,6 @@ public class TCPClientHandler {
                 res += dataRead;
                 res += "\n";
             }
-            res = inFromServer.readLine(); // receive the server's result via the input stream from the server
             System.out.println("TCPClientHandler - Server response: " + res);
         } catch (Exception e) {
             System.err.println("Error from TCPClientHandler.send: could not read from server");
