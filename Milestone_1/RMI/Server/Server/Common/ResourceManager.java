@@ -425,7 +425,7 @@ public class ResourceManager implements IResourceManager
 		return m_name;
 	}
 
-	public boolean updateReservation(String itemKey, int itemCount){
+	public boolean updateReservation(String itemKey, int itemCount) throws RemoteException {
 		try {
 			ReservableItem item  = (ReservableItem)readData(itemKey);
 

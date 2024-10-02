@@ -248,5 +248,5 @@ public interface IResourceManager extends Remote
      *
      * @return Success
      */
-    public boolean updateReservation(String itemKey, int itemCount);
+    public boolean updateReservation(String itemKey, int itemCount) throws RemoteException;
 }
