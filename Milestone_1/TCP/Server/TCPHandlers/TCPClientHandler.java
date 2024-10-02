@@ -59,7 +59,7 @@ public class TCPClientHandler {
         String res = "";
         try {
             // continue reading until there is no more data
-            String dataRead = null;
+            String dataRead;
             while ((dataRead = inFromServer.readLine()) != null) {
                 System.err.println("TCPClientHandler - dataRead: " + dataRead);
                 res += dataRead;
