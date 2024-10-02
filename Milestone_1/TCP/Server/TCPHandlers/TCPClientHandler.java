@@ -56,16 +56,16 @@ public class TCPClientHandler {
     public String send(String message) {
         outToServer.println(message); // send the user's input via the output stream to the server
 
+        System.out.println(" - sent message to server: " + message);
+
         String res = "";
         try {
             // continue reading until there is no more data
             String dataRead;
-            dataRead = inFromServer.readLine();
-            System.err.println("inital dataRead: " + dataRead);
+            System.err.println("running send!");
             while ((dataRead = inFromServer.readLine()) != null) {
                 System.err.println("TCPClientHandler - dataRead: " + dataRead);
                 res += dataRead;
-                res += "\n";
             }
             System.out.println("TCPClientHandler - Server response: " + res);
         } catch (Exception e) {
