@@ -6,10 +6,8 @@
 package Server.Common;
 
 import Server.Interface.*;
-
-import java.util.*;
 import java.rmi.RemoteException;
-import java.io.*;
+import java.util.*;
 
 
 
@@ -425,6 +423,19 @@ public class ResourceManager implements IResourceManager
 	public String getName() throws RemoteException
 	{
 		return m_name;
+	}
+
+	public boolean updateReservation(String itemKey, int itemCount){
+		try {
+			ReservableItem item  = (ReservableItem)readData(itemKey);
+
+			item.setReserved(item.getReserved() - itemCount);
+			item.setCount(item.getCount() + itemCount);
+			writeData(item.getKey(), item);
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
 	}
 }
  

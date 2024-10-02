@@ -2,7 +2,6 @@ package Server.Interface;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-
 import java.util.*;
 
 /** 
@@ -243,4 +242,11 @@ public interface IResourceManager extends Remote
      */
     public String getName()
         throws RemoteException;
+
+    /**
+     * Update reservation.
+     *
+     * @return Success
+     */
+    public boolean updateReservation(String itemKey, int itemCount);
 }
