@@ -149,13 +149,6 @@ public class ResourceManager implements IResourceManager
 	protected boolean reserveItem(int customerID, String key, String location)
 	{
 		Trace.info("RM::reserveItem(customer=" + customerID + ", " + key + ", " + location + ") called" );        
-		// Read customer object if it exists (and read lock it)
-		Customer customer = (Customer)readData(Customer.getKey(customerID));
-		if (customer == null)
-		{
-			Trace.warn("RM::reserveItem(" + customerID + ", " + key + ", " + location + ")  failed--customer doesn't exist");
-			return false;
-		} 
 
 		// Check if the item is available
 		ReservableItem item = (ReservableItem)readData(key);
@@ -171,8 +164,6 @@ public class ResourceManager implements IResourceManager
 		}
 		else
 		{            
-			customer.reserve(key, location, item.getPrice());        
-			writeData(customer.getKey(), customer);
 
 			// Decrease the number of available items in the storage
 			item.setCount(item.getCount() - 1);
